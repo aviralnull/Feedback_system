@@ -18,7 +18,7 @@ import { Loader2 } from "lucide-react"
 import { signInSchema } from "@/schemas/signInSchema"
 import { signIn } from "next-auth/react"
 export default function Page() {
-
+ const [isSubmiting , setIsSubmiting] = useState(false) ;
 
 
   const router = useRouter()
@@ -35,7 +35,7 @@ export default function Page() {
 
   
 const onSubmit = async (data: z.infer<typeof signInSchema>)=>{
-
+setIsSubmiting(true) 
  
  const result = await signIn('credentials', {
     redirect: false ,
@@ -45,9 +45,11 @@ const onSubmit = async (data: z.infer<typeof signInSchema>)=>{
 
   if(result?.error){
     toast.error("Login Failed , Incorrect username or password")
+     setIsSubmiting(false) 
   } 
   if(result?.url){
     router.replace('/dashboard')
+     setIsSubmiting(false) 
   }
 
 }
@@ -90,7 +92,13 @@ return  (
         />
       
       <Button type="submit" >
-        Signin
+     {
+          isSubmiting ?(
+            <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin"/> Please wait
+            </>
+          ) : ('Signin')
+        }
       </Button>
       </form>
 
